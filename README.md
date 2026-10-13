@@ -81,9 +81,17 @@ Use the experiment notebooks with their pinned library versions and the appropri
 
 **Scope of claims:** these are strong results within the **reported grouped out-of-fold research evaluation**; they are not clinical deployment metrics or an independent external-hospital validation. Some mask references in this pipeline are derived/weak labels, a relevant consideration for interpreting Dice.
 
-## Acknowledgements
+## Research affiliation, coordination and acknowledgements
 
-Implementation, experiments, analysis and portfolio documentation: **Sara-Mihaela Șova**. Research conducted in the context of work at the **Victor Babeș National Institute of Pathology**, with collaboration and feedback from **Leonard Savu** and the broader research team.
+**Sara-Mihaela Șova** — MASOR implementation, experiments, evaluation and repository documentation; third-year medical student, **Carol Davila University of Medicine and Pharmacy (UMFCD), Bucharest**.
+
+**Leonard Savu** — research collaborator; second-year medical student, **Carol Davila University of Medicine and Pharmacy (UMFCD), Bucharest**.
+
+**Research institution:** **“Victor Babeș” National Institute of Pathology**, **Laboratory of Ultrastructural Pathology** (*Laboratorul de Patologie Ultrastructurală*), Bucharest.
+
+**Research coordinator:** **Șef lucrări Dr. Emanuel Tudor Fertig**.
+
+MASOR was developed in the context of research activities within the laboratory, with collaboration between Sara-Mihaela Șova and Leonard Savu under the coordination of Șef lucrări Dr. Emanuel Tudor Fertig.
 
 ---
 
