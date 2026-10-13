@@ -1,0 +1,47 @@
+[
+  {
+    "fold": 0,
+    "filename": "MASOR21_fold_0_final.pt",
+    "size_MB": 109.17717170715332,
+    "sha256": "189da63a7a46586c9e43c569929ab2b503ae06414c5f65f5289185fa0321dac3",
+    "bin_threshold": 0.35,
+    "prior_lambda": 0.75,
+    "best_epoch": 9
+  },
+  {
+    "fold": 1,
+    "filename": "MASOR21_fold_1_final.pt",
+    "size_MB": 109.17717170715332,
+    "sha256": "7d667893692866a1a3d5c837f34985e7e2cadb6560c4dcb599168e55b3c99061",
+    "bin_threshold": 0.4,
+    "prior_lambda": 0.75,
+    "best_epoch": 55
+  },
+  {
+    "fold": 2,
+    "filename": "MASOR21_fold_2_final.pt",
+    "size_MB": 109.17717170715332,
+    "sha256": "1a88e4f7b369f1619403c2ebb3239e1abfc382b21269008a3bb0f3abeea3bc39",
+    "bin_threshold": 0.55,
+    "prior_lambda": 0.75,
+    "best_epoch": 51
+  },
+  {
+    "fold": 3,
+    "filename": "MASOR21_fold_3_final.pt",
+    "size_MB": 109.17717170715332,
+    "sha256": "08a925ac3d7befacdc83247e4911a294457dc45ffc7cf3bd8393646b4d501b78",
+    "bin_threshold": 0.5,
+    "prior_lambda": 0.75,
+    "best_epoch": 34
+  },
+  {
+    "fold": 4,
+    "filename": "MASOR21_fold_4_final.pt",
+    "size_MB": 109.17717170715332,
+    "sha256": "ea74211b8058ada5e4cefce0c0d7ae16f7d8f572b43798fb300a05877ed09362",
+    "bin_threshold": 0.5,
+    "prior_lambda": 0.75,
+    "best_epoch": 49
+  }
+]
