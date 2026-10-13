@@ -1,0 +1,20 @@
+# Python / notebooks
+__pycache__/
+.ipynb_checkpoints/
+*.py[cod]
+.venv/
+venv/
+.DS_Store
+# Local data and experiment outputs
+data/
+runs/
+wandb/
+*.svs
+*.ndpi
+*.mrxs
+*.tif
+*.tiff
+*.pt
+*.pth
+*.ckpt
+# Release weights are separate from Git history
