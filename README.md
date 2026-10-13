@@ -104,7 +104,7 @@ Use the experiment notebooks with their pinned library versions and the appropri
 
 ## Acknowledgements
 
-**Leonard Savu** — co-developer and research collaborator; second-year medical student, **Carol Davila University of Medicine and Pharmacy (UMFCD), Bucharest**. Contributed alongside Sara-Mihaela Șova to the computational-pathology work, including model development, experimental implementation, evaluation workflows and interpretation of results.
+**Leonard Savu** — co-developer of MASOR and research collaborator; second-year medical student, **Carol Davila University of Medicine and Pharmacy (UMFCD), Bucharest**. Contributed to the computational-pathology work, including model development, experimental implementation, evaluation workflows and interpretation of results.
 
 **Research institution and laboratory:** **“Victor Babeș” National Institute of Pathology, Laboratory of Ultrastructural Pathology** (*Laboratorul de Patologie Ultrastructurală*), Bucharest.
 
