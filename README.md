@@ -112,7 +112,7 @@ Use the experiment notebooks with their pinned library versions and the appropri
 
 **Research supervisor and laboratory head:** **Dr. Emanuel Tudor Fertig — Head of the Laboratory of Ultrastructural Pathology**.
 
-The project was developed in the context of research activities at the Laboratory of Ultrastructural Pathology, with collaboration between Sara-Mihaela Șova and Leonard Savu under the supervision of Dr. Emanuel Tudor Fertig.
+The project was developed in the context of research activities at the Laboratory of Ultrastructural Pathology, with collaboration between Sara-Mihaela Șova and Leonard Savu under the supervision of Dr. Emanuel Tudor Fertig, and the rest of the Laboratory's team, including doctors, medical residents, and bioinformaticians. We acknowledge their contribution and guidance, as well as their continuous support in the production of this pipeline.
 
 ---
 
