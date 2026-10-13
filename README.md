@@ -38,6 +38,27 @@ These are the **exact counts in `master_manifest.csv`**, not the full original E
 
 **Dataset paper:** Shi L. et al. *EBHI-Seg: A novel enteroscope biopsy histopathological hematoxylin and eosin image dataset for image segmentation tasks.* Frontiers in Medicine, 2023. DOI: [10.3389/fmed.2023.1114673](https://doi.org/10.3389/fmed.2023.1114673).
 
+## Proposed methodological contributions
+
+MASOR 2.1 proposes an **annotation-aware, ordinal-prototype framework** for colorectal histopathology. Its methodological contribution lies in integrating the following design choices into a single trainable segmentation pipeline, rather than in claiming that any individual component was invented here.
+
+1. **Decoupled localisation and histological grading.** An independently supervised binary foreground head learns tissue localisation from EBHI-Seg's segmentation annotations. Grade inference is restricted to the estimated foreground, avoiding the assumption that the image-level histological diagnosis is a manually annotated dense grade map.
+2. **Structurally ordered, trainable morphological prototypes.** A shared ConvNeXt-Tiny/FPN feature extractor generates a 64-dimensional dense morphology representation. Instead of a conventional independent 1×1 multiclass segmentation head, MASOR learns four prototype positions along a common ordinal axis. Positive gaps, parameterised through softplus and cumulative sums, enforce the progression **normal → low-grade → high-grade → adenocarcinoma**. Per-pixel grade logits are computed from distances to these prototypes, with learned class biases and small prototype residuals.
+3. **Feature-level H&E stain invariance.** Spatially matched clean and H&E-perturbed views are used for an InfoNCE-style contrastive objective on the *shared morphology features*, rather than on the predicted class logits. Stain normalisation is deliberately omitted from this experiment.
+4. **EMA-based weak-label refinement.** An exponential-moving-average teacher produces soft, ordinal-adjacent pseudo-targets after warm-up, complementing weak dense supervision derived from the image-level label and the foreground mask.
+5. **Grade-sensitive learning under class imbalance.** Foreground-masked log-sum-exp pooling provides image-level supervision with sensitivity to severe regions. A high-grade neighbour-margin objective specifically addresses the confusion between low-grade, high-grade and invasive adenocarcinoma. Group-aware sampling and fold-specific weighting are used instead of high-grade cut-and-paste augmentation.
+6. **Leakage-conscious evaluation and calibration.** Five outer grouped folds are combined with **validation-only** selection of localisation thresholds and image-prior strength; checkpoint selection uses class-balanced foreground metrics. The saved evaluation includes out-of-fold predictions, group-based bootstrap uncertainty and a separate stain-perturbation audit.
+
+### Relationship to prior work and research hypothesis
+
+Weakly supervised histology segmentation, prototype-based feature learning, contrastive stain robustness and EMA/self-training have precedents in the literature. For example, Safdari *et al.* (2025) investigate contrastive learning and self-training for weakly supervised histology segmentation, while Tang *et al.* (CVPR 2025) describe prototype-based prompting for histopathological segmentation. MASOR's **specific technical proposal** is to couple **explicitly ordered, trainable prototype geometry** to an **annotation-aware localisation/grade decomposition**, with additional feature-level stain invariance and high-grade-focused optimisation.
+
+**Research hypothesis:** this formulation can support ordinal consistency and improve grade-sensitive tissue mapping under incomplete pixel-level grade annotations, while retaining robust foreground localisation. The five-fold results below evaluate the integrated system; **component-level causality and comparative superiority remain to be established through controlled ablations on identical splits**.
+
+Selected related work:
+- Safdari R. *et al.* (2025). [Weakly-supervised semantic segmentation in histology images using contrastive learning and self-training](https://doi.org/10.1016/j.compbiomed.2025.110321).
+- Tang Q. *et al.* (CVPR 2025). [Prototype-Based Image Prompting for Weakly Supervised Histopathological Image Segmentation](https://openaccess.thecvf.com/content/CVPR2025/html/Tang_Prototype-Based_Image_Prompting_for_Weakly_Supervised_Histopathological_Image_Segmentation_CVPR_2025_paper.html).
+
 ## Modelling and evaluation
 
 1. **Backbone and multi-task formulation.** ConvNeXt-Tiny features with FPN-style multiscale decoding; binary localisation, semantic segmentation and ordinal-aware histological representation.
@@ -83,15 +104,15 @@ Use the experiment notebooks with their pinned library versions and the appropri
 
 ## Research affiliation, coordination and acknowledgements
 
-**Sara-Mihaela Șova** — MASOR implementation, experiments, evaluation and repository documentation; third-year medical student, **Carol Davila University of Medicine and Pharmacy (UMFCD), Bucharest**.
+**Sara-Mihaela Șova** — implementation, model development, experiments, evaluation and repository documentation; third-year medical student, **Carol Davila University of Medicine and Pharmacy (UMFCD), Bucharest**.
 
 **Leonard Savu** — research collaborator; second-year medical student, **Carol Davila University of Medicine and Pharmacy (UMFCD), Bucharest**.
 
-**Research institution:** **“Victor Babeș” National Institute of Pathology**, **Laboratory of Ultrastructural Pathology** (*Laboratorul de Patologie Ultrastructurală*), Bucharest.
+**Research institution and laboratory:** **“Victor Babeș” National Institute of Pathology, Laboratory of Ultrastructural Pathology** (*Laboratorul de Patologie Ultrastructurală*), Bucharest.
 
-**Research coordinator:** **Șef lucrări Dr. Emanuel Tudor Fertig**.
+**Research supervisor and laboratory head:** **Dr. Emanuel Tudor Fertig — Lecturer and Head of the Laboratory of Ultrastructural Pathology** (*Șef lucrări, șef de laborator*).
 
-MASOR was developed in the context of research activities within the laboratory, with collaboration between Sara-Mihaela Șova and Leonard Savu under the coordination of Șef lucrări Dr. Emanuel Tudor Fertig.
+The project was developed in the context of research activities at the Laboratory of Ultrastructural Pathology, with collaboration between Sara-Mihaela Șova and Leonard Savu under the supervision of Dr. Emanuel Tudor Fertig.
 
 ---
 
