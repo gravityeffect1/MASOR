@@ -102,9 +102,7 @@ Use the experiment notebooks with their pinned library versions and the appropri
 
 **Scope of claims:** these are strong results within the **reported grouped out-of-fold research evaluation**; they are not clinical deployment metrics or an independent external-hospital validation. Some mask references in this pipeline are derived/weak labels, a relevant consideration for interpreting Dice.
 
-## Research affiliation, coordination and acknowledgements
-
-**Sara-Mihaela Șova** — implementation, model development, experiments, evaluation and repository documentation; third-year medical student, **Carol Davila University of Medicine and Pharmacy (UMFCD), Bucharest**.
+## Acknowledgements
 
 **Leonard Savu** — research collaborator; second-year medical student, **Carol Davila University of Medicine and Pharmacy (UMFCD), Bucharest**.
 
