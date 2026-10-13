@@ -1,0 +1,14 @@
+path: data/semantic_split
+train: images/train
+val: images/val
+test: images/test
+masks_dir: labels
+channels: 3
+nc: 6
+names:
+  0: background
+  1: stroma
+  2: adk_invasion
+  3: high_grade
+  4: low_grade
+  5: normal_gland
