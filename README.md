@@ -110,7 +110,7 @@ Use the experiment notebooks with their pinned library versions and the appropri
 
 **Research institution and laboratory:** **“Victor Babeș” National Institute of Pathology, Laboratory of Ultrastructural Pathology** (*Laboratorul de Patologie Ultrastructurală*), Bucharest.
 
-**Research supervisor and laboratory head:** **Dr. Emanuel Tudor Fertig — Lecturer and Head of the Laboratory of Ultrastructural Pathology** (*Șef lucrări, șef de laborator*).
+**Research supervisor and laboratory head:** **Dr. Emanuel Tudor Fertig — Head of the Laboratory of Ultrastructural Pathology**.
 
 The project was developed in the context of research activities at the Laboratory of Ultrastructural Pathology, with collaboration between Sara-Mihaela Șova and Leonard Savu under the supervision of Dr. Emanuel Tudor Fertig.
 
