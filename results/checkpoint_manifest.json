@@ -1,47 +1,52 @@
-[
-  {
-    "fold": 0,
-    "filename": "MASOR21_fold_0_final.pt",
-    "size_MB": 109.17717170715332,
-    "sha256": "189da63a7a46586c9e43c569929ab2b503ae06414c5f65f5289185fa0321dac3",
-    "bin_threshold": 0.35,
-    "prior_lambda": 0.75,
-    "best_epoch": 9
-  },
-  {
-    "fold": 1,
-    "filename": "MASOR21_fold_1_final.pt",
-    "size_MB": 109.17717170715332,
-    "sha256": "7d667893692866a1a3d5c837f34985e7e2cadb6560c4dcb599168e55b3c99061",
-    "bin_threshold": 0.4,
-    "prior_lambda": 0.75,
-    "best_epoch": 55
-  },
-  {
-    "fold": 2,
-    "filename": "MASOR21_fold_2_final.pt",
-    "size_MB": 109.17717170715332,
-    "sha256": "1a88e4f7b369f1619403c2ebb3239e1abfc382b21269008a3bb0f3abeea3bc39",
-    "bin_threshold": 0.55,
-    "prior_lambda": 0.75,
-    "best_epoch": 51
-  },
-  {
-    "fold": 3,
-    "filename": "MASOR21_fold_3_final.pt",
-    "size_MB": 109.17717170715332,
-    "sha256": "08a925ac3d7befacdc83247e4911a294457dc45ffc7cf3bd8393646b4d501b78",
-    "bin_threshold": 0.5,
-    "prior_lambda": 0.75,
-    "best_epoch": 34
-  },
-  {
-    "fold": 4,
-    "filename": "MASOR21_fold_4_final.pt",
-    "size_MB": 109.17717170715332,
-    "sha256": "ea74211b8058ada5e4cefce0c0d7ae16f7d8f572b43798fb300a05877ed09362",
-    "bin_threshold": 0.5,
-    "prior_lambda": 0.75,
-    "best_epoch": 49
-  }
-]
+{
+  "version": "MASOR-2.2",
+  "experiment": "masor22_full_case_s42",
+  "group_level": "case",
+  "folds": [
+    {
+      "fold": 0,
+      "filename": "masor22_full_case_s42_fold_0_final.pt",
+      "size_MB": 109.18367767333984,
+      "sha256": "da1a17a3b7bb3092918ac46cf1d1ca3cfe68daee61853d5579423b320817ea02",
+      "bin_threshold": 0.35,
+      "prior_lambda": 1.0,
+      "best_epoch": 36
+    },
+    {
+      "fold": 1,
+      "filename": "masor22_full_case_s42_fold_1_final.pt",
+      "size_MB": 109.18367767333984,
+      "sha256": "97d66bdd22ffc4711f522479871af53d1798385d240f43f19413b988edef2075",
+      "bin_threshold": 0.4,
+      "prior_lambda": 2.0,
+      "best_epoch": 62
+    },
+    {
+      "fold": 2,
+      "filename": "masor22_full_case_s42_fold_2_final.pt",
+      "size_MB": 109.18367767333984,
+      "sha256": "a005d5bfd5be471d6fc29d74fe872a66447d9a18259eda727b0f31cb4b3e0ba5",
+      "bin_threshold": 0.5,
+      "prior_lambda": 0.25,
+      "best_epoch": 39
+    },
+    {
+      "fold": 3,
+      "filename": "masor22_full_case_s42_fold_3_final.pt",
+      "size_MB": 109.18367767333984,
+      "sha256": "9dfcddbdda6628e157ca445512eb1b17a7c3f2c606549964f71be5cf0a8f0880",
+      "bin_threshold": 0.5,
+      "prior_lambda": 2.0,
+      "best_epoch": 35
+    },
+    {
+      "fold": 4,
+      "filename": "masor22_full_case_s42_fold_4_final.pt",
+      "size_MB": 109.18367767333984,
+      "sha256": "85f530603bd65366854dc7ea28e33cc5e34c795ef718e98c99ed2bd4a5b333d2",
+      "bin_threshold": 0.45,
+      "prior_lambda": 2.0,
+      "best_epoch": 11
+    }
+  ]
+}

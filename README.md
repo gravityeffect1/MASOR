@@ -1,22 +1,37 @@
-# MASOR 2.1
+# MASOR 2.2
 ### Multi-task, ordinal-aware segmentation of colorectal histopathology
 
 **Sara-Mihaela Șova** · Medical Student, Carol Davila University of Medicine and Pharmacy · Research, Victor Babeș National Institute of Pathology
 
-MASOR 2.1 is a computational-pathology research pipeline for **tissue localisation, histological segmentation and ordinal-aware grading** of H&E colorectal biopsy images. It combines a **ConvNeXt-Tiny backbone with an FPN-style decoder and task-specific modelling** and was evaluated using **five-fold grouped cross-validation**.
+MASOR 2.2 is a computational-pathology research pipeline for **tissue localisation, histological segmentation and ordinal-aware grading** of H&E colorectal biopsy images. It combines a **ConvNeXt-Tiny backbone with an FPN-style decoder and task-specific modelling** and was evaluated using **five-fold case-grouped cross-validation**.
 
 ## Results at a glance
 
 | Out-of-fold metric | Result | 95% bootstrap interval |
 |:--|--:|:--|
-| **Binary tissue localisation Dice** | **0.939** | 0.934–0.943 |
-| **Macro foreground Dice** | **0.815** | 0.783–0.843 |
-| **Low-grade Dice** | **0.913** | 0.892–0.931 |
-| **Adenocarcinoma Dice** | **0.869** | 0.850–0.887 |
-| Normal gland Dice | 0.852 | 0.770–0.913 |
-| High-grade Dice | 0.625 | 0.544–0.692 |
+| **Binary tissue localisation Dice** | **0.940** | 0.935–0.945 |
+| **Macro foreground Dice** | **0.786** | 0.745–0.822 |
+| **Low-grade Dice** | **0.902** | 0.877–0.923 |
+| **Adenocarcinoma Dice** | **0.869** | 0.846–0.888 |
+| Normal gland Dice | 0.784 | 0.666–0.889 |
+| High-grade Dice | 0.591 | 0.505–0.658 |
 
-**1,694 evaluated images · 376 source groups · five outer folds · 5,000 bootstrap replicates.** The table reports bootstrap means computed from the saved OOF analysis, with intervals supplied by the experiment export.
+**1,694 evaluated images · 267 case-level groups · five outer folds · 5,000 bootstrap replicates · 28.6M parameters · ~27 ms/image with test-time augmentation.** The table reports bootstrap means computed from the saved OOF analysis, with intervals supplied by the experiment export (`results/OOF_bootstrap_ci.csv`).
+
+### Image-level ordinal grading (out-of-fold)
+
+Beyond pixel segmentation, the image-level grade head is evaluated as an ordinal classifier:
+
+| Metric | Result | 95% interval |
+|:--|--:|:--|
+| Accuracy | 0.902 | 0.879–0.923 |
+| Balanced accuracy | 0.833 | 0.796–0.871 |
+| Macro F1 | 0.834 | 0.800–0.864 |
+| Quadratic weighted kappa | 0.949 | 0.936–0.961 |
+| Ordinal MAE | 0.100 | 0.079–0.124 |
+| AUROC normal vs neoplasia | 0.983 | 0.965–0.998 |
+| AUROC advanced (high-grade + adenocarcinoma) | 0.991 | 0.984–0.996 |
+| Expected calibration error | 0.025 | 0.016–0.047 |
 
 ![Fold-level stability](figures/OOF_fold_stability.png)
 
@@ -24,7 +39,7 @@ MASOR 2.1 is a computational-pathology research pipeline for **tissue localisati
 
 [EBHI-Seg](https://figshare.com/articles/dataset/EBHI-SEG/21540159) is a public dataset of **H&E-stained colorectal biopsy histopathology images**, introduced by Shi et al. (2023). The original publication describes **2,228 histology images and 2,228 paired ground-truth images**, with six original diagnostic groups: normal, polyp, low-grade intraepithelial neoplasia, high-grade intraepithelial neoplasia, serrated adenoma and adenocarcinoma. The published images are 224 × 224 pixels.
 
-**MASOR 2.1 uses a defined four-category subset / mapping**, rather than all six original classes:
+**MASOR uses a defined four-category subset / mapping**, rather than all six original classes:
 
 | MASOR label | Images | Ordinal index |
 |:--|--:|--:|
@@ -40,14 +55,14 @@ These are the **exact counts in `master_manifest.csv`**, not the full original E
 
 ## Proposed methodological contributions
 
-MASOR 2.1 proposes an **annotation-aware, ordinal-prototype framework** for colorectal histopathology. Its methodological contribution lies in integrating the following design choices into a single trainable segmentation pipeline, rather than in claiming that any individual component was invented here.
+MASOR proposes an **annotation-aware, ordinal-prototype framework** for colorectal histopathology. Its methodological contribution lies in integrating the following design choices into a single trainable segmentation pipeline, rather than in claiming that any individual component was invented here.
 
 1. **Decoupled localisation and histological grading.** An independently supervised binary foreground head learns tissue localisation from EBHI-Seg's segmentation annotations. Grade inference is restricted to the estimated foreground, avoiding the assumption that the image-level histological diagnosis is a manually annotated dense grade map.
 2. **Structurally ordered, trainable morphological prototypes.** A shared ConvNeXt-Tiny/FPN feature extractor generates a 64-dimensional dense morphology representation. Instead of a conventional independent 1×1 multiclass segmentation head, MASOR learns four prototype positions along a common ordinal axis. Positive gaps, parameterised through softplus and cumulative sums, enforce the progression **normal → low-grade → high-grade → adenocarcinoma**. Per-pixel grade logits are computed from distances to these prototypes, with learned class biases and small prototype residuals.
 3. **Feature-level H&E stain invariance.** Spatially matched clean and H&E-perturbed views are used for an InfoNCE-style contrastive objective on the *shared morphology features*, rather than on the predicted class logits. Stain normalisation is deliberately omitted from this experiment.
 4. **EMA-based weak-label refinement.** An exponential-moving-average teacher produces soft, ordinal-adjacent pseudo-targets after warm-up, complementing weak dense supervision derived from the image-level label and the foreground mask.
 5. **Grade-sensitive learning under class imbalance.** Foreground-masked log-sum-exp pooling provides image-level supervision with sensitivity to severe regions. A high-grade neighbour-margin objective specifically addresses the confusion between low-grade, high-grade and invasive adenocarcinoma. Group-aware sampling and fold-specific weighting are used instead of high-grade cut-and-paste augmentation.
-6. **Leakage-conscious evaluation and calibration.** Five outer grouped folds are combined with **validation-only** selection of localisation thresholds and image-prior strength; checkpoint selection uses class-balanced foreground metrics. The saved evaluation includes out-of-fold predictions, group-based bootstrap uncertainty and a separate stain-perturbation audit.
+6. **Leakage-conscious evaluation and calibration.** Five outer **case-grouped** folds are combined with **validation-only** selection of localisation thresholds and image-prior strength; checkpoint selection uses class-balanced foreground metrics. The saved evaluation includes out-of-fold predictions, group-based bootstrap uncertainty and a separate stain-perturbation audit.
 
 ### Relationship to prior work and research hypothesis
 
@@ -63,50 +78,68 @@ Selected related work:
 
 1. **Backbone and multi-task formulation.** ConvNeXt-Tiny features with FPN-style multiscale decoding; binary localisation, semantic segmentation and ordinal-aware histological representation.
 2. **Ordinal progression.** The experiment explicitly encodes the order normal → low-grade → high-grade → adenocarcinoma, rather than treating all grades as unrelated categories.
-3. **Group-aware validation.** The 1,694 images were assigned across five outer test folds with 376 unique source-group identifiers. Inspection of `master_manifest.csv` confirms each `group_key` belongs to exactly one outer fold.
-4. **Thresholded post-processing.** Fold-specific binary localisation thresholds (0.35, 0.40, 0.55, 0.50, 0.50) with `prior_lambda=0.75` in the supplied fold exports.
-5. **Metrics and uncertainty.** Dice/IoU by class and fold, pooled out-of-fold bootstrap estimates with 5,000 replicates, and fold-stability visualisation.
+3. **Case-grouped validation.** The 1,694 images were assigned across five outer test folds grouped at the **case level (267 cases)**, a stricter leakage control than source-image grouping. Inspection of `master_manifest.csv` confirms each case belongs to exactly one outer fold.
+4. **Thresholded post-processing.** Validation-selected fold-specific binary localisation thresholds (0.35, 0.40, 0.50, 0.50, 0.45) and prior strength `prior_lambda` (1.0, 2.0, 0.25, 2.0, 2.0).
+5. **Metrics and uncertainty.** Dice/IoU by class and fold; image-level ordinal metrics (quadratic weighted kappa, balanced accuracy, ordinal MAE, AUROC, calibration); pooled out-of-fold bootstrap estimates with 5,000 replicates; and fold-stability visualisation.
 
 ### Five-fold performance
 
-| Fold | Test images | Source groups | Localisation Dice | Macro foreground Dice | Adenocarcinoma Dice |
+| Fold | Test images | Case groups | Localisation Dice | Macro foreground Dice | Adenocarcinoma Dice |
 |--:|--:|--:|--:|--:|--:|
-| 0 | 333 | 74 | 0.927 | 0.771 | 0.829 |
-| 1 | 324 | 75 | 0.943 | 0.795 | 0.872 |
-| 2 | 312 | 75 | 0.945 | 0.791 | 0.869 |
-| 3 | 359 | 75 | 0.940 | 0.859 | 0.892 |
-| 4 | 366 | 77 | 0.938 | 0.869 | 0.878 |
+| 0 | 356 | 55 | 0.944 | 0.761 | 0.871 |
+| 1 | 315 | 51 | 0.934 | 0.809 | 0.890 |
+| 2 | 342 | 53 | 0.940 | 0.754 | 0.884 |
+| 3 | 282 | 53 | 0.952 | 0.835 | 0.877 |
+| 4 | 399 | 55 | 0.932 | 0.767 | 0.823 |
 
-**What stands out:** strong binary localisation across all five outer folds (Dice **0.927–0.945**), high performance for low-grade and adenocarcinoma categories, and improved macro foreground Dice in folds 3–4. High-grade morphology is the most variable category and an explicit subject for further analysis.
+**What stands out:** strong binary localisation across all five outer folds (Dice **0.932–0.952**), high performance for low-grade and adenocarcinoma categories, and strong image-level ordinal agreement (quadratic weighted kappa **0.949**). High-grade morphology is the most variable category and an explicit subject for further analysis.
 
 ## Experiments
 
-**Primary:** MASOR 2.1 training/evaluation notebook and outputs (`notebooks/`, `results/`, `figures/`).
+**Primary:** MASOR 2.2 training/evaluation notebook and outputs (`notebooks/`, `results/`, `figures/`).
 
-**Baseline:** a distinct YOLO26m semantic-segmentation experiment (`baselines/`) using **407 paired tiles from 62 source slides, six pixel labels, and a slide-level train/validation/test split**. Its held-out test output is **mIoU 0.402** and **pixel accuracy 0.644**. This is a separate dataset/protocol and therefore **not a like-for-like performance comparison** against MASOR 2.1.
+**Baseline:** a distinct YOLO26m semantic-segmentation experiment (`baselines/`) using **407 paired tiles from 62 source slides, six pixel labels, and a slide-level train/validation/test split**. Its held-out test output is **mIoU 0.402** and **pixel accuracy 0.644**. This is a separate dataset/protocol and therefore **not a like-for-like performance comparison** against MASOR.
 
 ## Repository contents
 
 ```text
-notebooks/       MASOR 2.1 training/evaluation
+notebooks/       MASOR 2.2 training/evaluation
 baselines/       YOLO26 semantic experiment and configuration
 preprocessing/   slide/tissue/tile extraction utilities
+infer.py         standalone checkpoint loader + single-image inference
 results/         OOF statistics, fold comparisons, manifests
 figures/         visual predictions and fold-stability analysis
 checkpoints/     checkpoint notes and provenance
 ```
 
+## Weights
+
+Trained checkpoints are distributed as **GitHub Release assets**, not committed to Git history (`*.pt` is git-ignored).
+
+- **Release `weights-v2.2-fold4`** — fold-4 checkpoint (`masor22_full_case_s42_fold_4_final.pt`, ConvNeXt-Tiny, 224 px, case-grouped, seed 42).
+- The full five-fold set (`masor22_full_case_s42_fold_{0..4}_final.pt`) comes from the same 2.2 case-grouped run; see `results/checkpoint_manifest.csv` for per-fold calibration and hashes.
+
+Minimal load and single-image inference:
+
+```bash
+python infer.py path/to/image.png \
+  --weights masor22_full_case_s42_fold_4_final.pt \
+  --out overlay.png
+```
+
+**Provenance note.** Two SHA-256 families appear across the experiment exports (`checkpoint_manifest.csv` vs the `checkpoint_sha256` column in `fold_comparison.csv`). Do not assume an exported `*_final.pt` reproduces the OOF scores bit-for-bit until provenance is reconciled. End-to-end inference from the released checkpoint has not yet been independently re-validated outside the training notebook.
+
 ## Reproducing the work
 
-Use the experiment notebooks with their pinned library versions and the appropriate EBHI-Seg-derived data layout. The full trained fold-2 checkpoint is a separate binary artefact; inference validation is in progress. Original images are obtained from the public dataset provider rather than included in Git.
+Use the experiment notebook with its pinned library versions (timm 1.0.19, scikit-learn 1.5.2, scikit-image 0.24.0) and the EBHI-Seg-derived data layout described in `master_manifest.csv`. Trained fold checkpoints are separate binary artefacts, distributed via GitHub Releases rather than committed to Git. Original images are obtained from the public dataset provider rather than included in Git.
 
-**Scope of claims:** these are strong results within the **reported grouped out-of-fold research evaluation**; they are not clinical deployment metrics or an independent external-hospital validation. Some mask references in this pipeline are derived/weak labels, a relevant consideration for interpreting Dice.
+**Scope of claims:** these are strong results within the **reported case-grouped out-of-fold research evaluation**; they are not clinical deployment metrics or an independent external-hospital validation. Some mask references in this pipeline are derived/weak labels, a relevant consideration for interpreting Dice.
 
 ## Acknowledgements
 
 **Leonard Savu** — co-developer of MASOR and research collaborator; second-year medical student, **Carol Davila University of Medicine and Pharmacy (UMFCD), Bucharest**. Contributed to the computational-pathology work, including model development, experimental implementation, evaluation workflows and interpretation of results.
 
-**Research institution and laboratory:** **“Victor Babeș” National Institute of Pathology, Laboratory of Ultrastructural Pathology** (*Laboratorul de Patologie Ultrastructurală*), Bucharest.
+**Research institution and laboratory:** **"Victor Babeș" National Institute of Pathology, Laboratory of Ultrastructural Pathology** (*Laboratorul de Patologie Ultrastructurală*), Bucharest.
 
 **Research supervisor and laboratory head:** **Dr. Emanuel Tudor Fertig — Head of the Laboratory of Ultrastructural Pathology**.
 
